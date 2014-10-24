@@ -6,4 +6,12 @@ public interface TableNameItf {
 
     // TABLE_STOCK
     public static final String COL_CODE = "code";
+
+    // TABLE_SHAREHOLDER
+    public static final String COL_TIME = "time";
+    public static final String COL_HOLDERNUM = "holderNum";
+    public static final String COL_STOCKNUM = "stockNum";
+    public static final String COL_PRICE = "price";
+    public static final String COL_MONEY = "money";
+    public static final String COL_TOP10 = "top10";
 }

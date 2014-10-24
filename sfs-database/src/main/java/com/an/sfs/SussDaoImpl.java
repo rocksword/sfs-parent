@@ -1,8 +1,10 @@
 package com.an.sfs;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,18 +12,102 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-public class SussDaoImpl implements SussDao {
+import com.an.sfs.po.ShareholderPo;
+import com.an.sfs.po.StockPo;
+
+@Component
+@Scope("singleton")
+public class SussDaoImpl implements SussDao, TableNameItf {
     private static final Logger LOGGER = LoggerFactory.getLogger(SussDaoImpl.class);
 
     @Autowired
     private DataSource dataSource;
 
     @Override
+    public List<ShareholderPo> getShareholder() {
+        String[] columnNames = new ShareholderPo().getAddColumnNames();
+        String sql = getSqlQuery(ShareholderPo.TABLE_NAME, columnNames, null, null, null);
+        LOGGER.debug("Execute sql: {}", sql);
+        return loadShareholder(sql);
+    }
+
+    private List<ShareholderPo> loadShareholder(String sql) {
+        List<ShareholderPo> poList = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(sql);) {
+            while (rs.next()) {
+                ShareholderPo po = new ShareholderPo();
+                po.setCode(rs.getString(COL_CODE));
+                po.setTime(rs.getString(COL_TIME));
+                po.setHolderNum(rs.getFloat(COL_HOLDERNUM));
+                po.setStockNum(rs.getFloat(COL_STOCKNUM));
+                po.setPrice(rs.getFloat(COL_PRICE));
+                po.setMoney(rs.getFloat(COL_MONEY));
+                po.setTop10(rs.getFloat(COL_TOP10));
+                poList.add(po);
+            }
+        } catch (SQLException e) {
+            poList.clear();
+            LOGGER.error("Error, sql {}", sql, e);
+        }
+        LOGGER.debug("poList size {}", poList.size());
+        return poList;
+    }
+
+    @Override
+    public List<StockPo> getStock() {
+        String[] columnNames = new StockPo().getAddColumnNames();
+        String sql = getSqlQuery(StockPo.TABLE_NAME, columnNames, null, null, null);
+        LOGGER.debug("Execute sql: {}", sql);
+        return loadStock(sql);
+    }
+
+    private List<StockPo> loadStock(String sql) {
+        List<StockPo> poList = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(sql);) {
+            while (rs.next()) {
+                StockPo po = new StockPo();
+                po.setCode(rs.getString(COL_CODE));
+                poList.add(po);
+            }
+        } catch (SQLException e) {
+            poList.clear();
+            LOGGER.error("Error, sql {}", sql, e);
+        }
+        LOGGER.debug("poList size {}", poList.size());
+        return poList;
+    }
+
+    @Override
     public boolean clearTable(String tableName) {
         LOGGER.warn("Clear talbe {}", tableName);
-        try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement();) {
+        try (Connection c = dataSource.getConnection(); Statement st = c.createStatement();) {
             String sql = String.format("DELETE FROM %s;", tableName);
+            LOGGER.debug("Execute sql: {}", sql);
+            try {
+                st.executeUpdate(sql);
+                return true;
+            } catch (SQLException e) {
+                LOGGER.error("Error, sql: {}", sql, e);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Error: ", e);
+        }
+        LOGGER.error("Failed to clear table {}", tableName);
+        return false;
+    }
+
+    @Override
+    public boolean clearTable(String tableName, String code) {
+        LOGGER.warn("Clear talbe {}", tableName);
+        try (Connection c = dataSource.getConnection(); Statement st = c.createStatement();) {
+            String sql = String.format("DELETE FROM %s WHERE code='%s';", tableName, code);
             LOGGER.debug("Execute sql: {}", sql);
             try {
                 st.executeUpdate(sql);

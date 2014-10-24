@@ -4,7 +4,7 @@ DROP TABLE stock;
 CREATE TABLE stock
 (
     id SERIAL NOT NULL,
-    code int NOT NULL,
+    code character varying(6) NOT NULL,
     CONSTRAINT pk_stock PRIMARY KEY (id)
 )
 WITH (
@@ -12,6 +12,23 @@ WITH (
 );
 ALTER TABLE stock OWNER TO postgres;
 
+DROP TABLE shareholder;
+CREATE TABLE shareholder
+(
+    id SERIAL NOT NULL,
+    code character varying(6) NOT NULL,
+    time character varying(10) NOT NULL,
+    holderNum float,
+    stockNum float,
+    price float,
+    money float,
+    top10 float,
+    CONSTRAINT pk_shareholder PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE shareholder OWNER TO postgres;
 
 DROP TABLE team;
 CREATE TABLE team

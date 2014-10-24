@@ -2,6 +2,9 @@ package com.an.sfs;
 
 import java.util.List;
 
+import com.an.sfs.po.ShareholderPo;
+import com.an.sfs.po.StockPo;
+
 public interface SussDao {
     // Clear table data
     /**
@@ -9,6 +12,13 @@ public interface SussDao {
      * @return
      */
     public boolean clearTable(String tableName);
+
+    /**
+     * @param tableName
+     * @param code
+     * @return
+     */
+    public boolean clearTable(String tableName, String code);
 
     /**
      * @param rowList
@@ -21,4 +31,14 @@ public interface SussDao {
      * @return
      */
     public boolean updateRowList(List<TableUpdateRowItf> rowList);
+
+    /**
+     * @return
+     */
+    public List<StockPo> getStock();
+
+    /**
+     * @return
+     */
+    public List<ShareholderPo> getShareholder();
 }

@@ -91,6 +91,15 @@ public class SfsUtil {
     }
 
     /**
+     * @param dirName
+     * @return
+     */
+    public static String getDirPathInData(String dirName) {
+        String homeDir = new File(DIR_DATA).getAbsolutePath();
+        return new StringBuilder().append(homeDir).append(File.separator).append(dirName).toString();
+    }
+
+    /**
      * @param fileName
      * @return data\fileName
      */
@@ -135,8 +144,7 @@ public class SfsUtil {
      * @param turnIndex
      * @return http://f10.eastmoney.com/f10_v2/ShareholderResearch.aspx?code=sh600000
      */
-    public static String getShareholderResearchUrl(String code) {
-        StringBuilder ret = new StringBuilder(BASE_URL).append("code=").append(code);
-        return ret.toString();
+    public static String getShareholderUrl(String code) {
+        return new StringBuilder(BASE_URL).append("code=").append(code).toString();
     }
 }

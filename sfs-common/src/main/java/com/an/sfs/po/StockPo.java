@@ -7,7 +7,7 @@ public class StockPo implements TableNameItf, TableAddRowItf, Comparable<StockPo
     public static final String TABLE_NAME = "stock";
     private int id;
     // 600000 000001
-    private int code;
+    private String code;
 
     @Override
     public String getTableName() {
@@ -26,7 +26,7 @@ public class StockPo implements TableNameItf, TableAddRowItf, Comparable<StockPo
 
     @Override
     public String[] getAddValueTypes() {
-        return new String[] { "" };
+        return new String[] { "str" };
     }
 
     public StockPo() {
@@ -34,7 +34,7 @@ public class StockPo implements TableNameItf, TableAddRowItf, Comparable<StockPo
 
     @Override
     public int compareTo(StockPo o) {
-        return code - o.getCode();
+        return code.compareTo(o.getCode());
     }
 
     @Override
@@ -50,11 +50,11 @@ public class StockPo implements TableNameItf, TableAddRowItf, Comparable<StockPo
         this.id = id;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 }
